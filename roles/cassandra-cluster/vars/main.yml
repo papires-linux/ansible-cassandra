@@ -1,0 +1,60 @@
+#python -c 'import crypt; print crypt.crypt("This is my Password", "cassandra")'
+linux_user: "cassandra"
+linux_password: caYoS0YZfmLq2
+
+cluster_name: Lab_Cluster
+# #Directory locations
+cassandra_home: /opt/cassandra 
+cassandra_path: /opt/cassandra/bin
+cassandra_data_directory: "{{ cassandra_home }}/data"
+cassandra_hints_directory: "{{ cassandra_home }}/hints"
+cassandra_commitlog_directory: "{{ cassandra_home }}/commitlogs"
+cassandra_saved_caches_directory: "{{ cassandra_home }}/saved_caches"
+cassandra_seeds_resolved: "{{ groups['seed-nodes'] | map('extract', hostvars, ['ansible_ssh_host']) | join(',') }}"
+
+# #For IP Address configuration in YML
+broadcast_address: "{{ hostvars[inventory_hostname]['ansible_ssh_host'] }}"
+listen_address: "{{ hostvars[inventory_hostname]['ansible_ssh_host'] }}"
+
+#
+# Configuration cassandra.yaml ############################
+cassandra_port: 9042
+# authenticator: AllowAllAuthenticator
+authenticator: PasswordAuthenticator
+# authorizer: AllowAllAuthorizer                                              
+authorizer: CassandraAuthorizer
+row_cache_size_in_mb: 0
+# row_cache_size_in_mb: 1024
+commitlog_sync_period_in_ms: 10000
+# commitlog_sync_period_in_ms: 30000
+commitlog_segment_size_in_mb: 32
+# commitlog_segment_size_in_mb: 640
+concurrent_reads: 32
+# concurrent_reads: 96
+concurrent_writes: 32
+# concurrent_writes: 96
+concurrent_counter_writes: 32
+# concurrent_counter_writes: 32
+file_cache_size_in_mb: 512
+# file_cache_size_in_mb: 8192
+memtable_heap_space_in_mb: 2048
+# memtable_heap_space_in_mb: 4096
+storage_port: 7000
+ssl_storage_port: 7001
+rpc_port: 9160
+broadcast_rpc_address: "{{ hostvars[inventory_hostname]['ansible_ssh_host'] }}"
+# broadcast_rpc_address: "0.0.0.0"
+concurrent_compactors: 1
+# concurrent_compactors: 96
+compaction_throughput_mb_per_sec: 16
+# compaction_throughput_mb_per_sec: 32
+stream_throughput_outbound_megabits_per_sec: 200
+# stream_throughput_outbound_megabits_per_sec: 400
+read_request_timeout_in_ms: 5000
+# read_request_timeout_in_ms: 6000000
+range_request_timeout_in_ms: 10000
+# range_request_timeout_in_ms: 2400000
+write_request_timeout_in_ms: 2000
+# write_request_timeout_in_ms: 600000
+request_timeout_in_ms: 10000
+# request_timeout_in_ms: 2400000

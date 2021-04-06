@@ -1,0 +1,9 @@
+- name: Default Playbook  
+  hosts: all
+
+  become: yes
+  become_method: sudo
+
+  roles: 
+    - cassandra-cluster
+    #- common 

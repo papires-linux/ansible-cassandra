@@ -1,0 +1,79 @@
+- user: 
+  name={{ linux_user }} 
+  password={{ linux_password }}
+
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: "{{ item }}"
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+
+- name: Check if java 8 alread installed
+  command: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g'
+  register: java_version
+  ignore_errors: True
+  
+- debug:  msg="Java not installed"
+  when: java_version is failed
+
+- name: install the latest version of Java
+  yum:
+    name: java-1.8.0-openjdk.x86_64
+    state: latest
+  when: java_version is failed
+
+- stat: 
+    path: /opt/apache-cassandra-3.11.9-bin.tar.gz
+  register: cassandra_source_file
+  
+- name: download the source
+  get_url: 
+    url: https://archive.apache.org/dist/cassandra/3.11.9/apache-cassandra-3.11.9-bin.tar.gz
+    dest: /opt/apache-cassandra-3.11.9-bin.tar.gz
+    mode: 0440
+  when: cassandra_source_file.stat.exists == False
+
+- name: Create home directory
+  file: 
+    path: "{{ cassandra_home }}"
+    state: directory
+    mode: 0755  
+
+- name: Creates directory
+  file:
+    path: "{{ cassandra_data_directory }}"
+    state: directory
+    owner: "{{ linux_user }}"
+    group: "{{ linux_user }}"
+
+- name: Extract cassandra source
+  unarchive:
+    src: /opt/apache-cassandra-3.11.9-bin.tar.gz
+    dest: "{{ cassandra_home }}"
+    owner: "{{ linux_user }}"
+    group: "{{ linux_user }}"
+    extra_opts: [--strip-components=1]
+    remote_src: yes  
+    
+- name: Export path
+  shell: "echo 'PATH=$PATH:{{ cassandra_path }}' > /etc/profile.d/custom-path.sh && . /etc/profile.d/custom-path.sh"
+  
+- name: install the configuration file
+  template: src=cassandra.yaml.j2 dest='{{ cassandra_home }}/conf/cassandra.yaml' mode=755
+  
+- name: copy the startup script
+  template: src=cassandra.service dest=/etc/systemd/system/cassandra.service 
+    owner=root 
+    group=root 
+    mode=755
+  
+- name: Enable the daemon
+  shell: systemctl daemon-reload
+
+- name: Enable service cassandra
+  shell: systemctl "{{ item }}" cassandra 
+  with_items:
+    - "start"
+    - "enable"

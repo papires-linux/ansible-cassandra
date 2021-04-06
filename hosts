@@ -1,0 +1,14 @@
+all:
+  hosts:
+    node1:
+      ansible_ssh_host: cassandra-w1
+    node2:
+      ansible_ssh_host: cassandra-w2
+    node3:
+      ansible_ssh_host: cassandra-w3
+  children:
+    seed-nodes:
+      hosts:
+        node1:
+        node2:
+        node3:

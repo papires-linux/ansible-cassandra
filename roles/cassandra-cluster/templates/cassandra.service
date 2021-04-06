@@ -1,0 +1,11 @@
+[Unit]
+Description=Apache Cassandra
+Cassandra After=network.target
+[Service]
+PIDFile=/opt/cassandra/cassandra.pid
+User=cassandra
+Group=cassandra
+ExecStart=/opt/cassandra/bin/cassandra -f -p /var/run/cassandra/cassandra.pid
+Restart=always
+[Install]
+WantedBy=multi-user.target
