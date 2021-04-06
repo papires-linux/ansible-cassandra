@@ -1,6 +1,4 @@
-- user: 
-  name={{ linux_user }} 
-  password={{ linux_password }}
+- user: name={{ linux_user }} password={{ linux_password }}
 
 - name: Remove swapfile from /etc/fstab
   mount:
