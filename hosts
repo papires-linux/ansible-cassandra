@@ -1,11 +1,11 @@
 all:
   hosts:
     node1:
-      ansible_ssh_host: 10.77.17.35
+      ansible_ssh_host: cassandra-w1
     node2:
-      ansible_ssh_host: 10.77.17.63
+      ansible_ssh_host: cassandra-w2
     node3:
-      ansible_ssh_host: 10.77.17.51
+      ansible_ssh_host: cassandra-w3
   children:
     seed-nodes:
       hosts:
