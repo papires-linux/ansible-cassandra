@@ -1,11 +1,16 @@
 variable "project" {
   description = "Nome do projeto para criar a instancia"
-  default     = "casandra-309923"
+  default     = "eighth-bivouac-310220"
 }
 
 variable "zone" {
-  description = "Zoneegião para criar a instancia"
-  default     = "southamerica-east1-c"
+  description = "Zone região para criar a instancia"
+  default     = "us-central1-a"
+}
+
+variable "region" {
+  description = "Zone região para criar a instancia"
+  default     = "us-central1"
 }
 
 variable "instance_name" {
