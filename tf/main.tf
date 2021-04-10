@@ -18,8 +18,9 @@ resource "google_compute_instance" "cassandra" {
   }
 
   metadata = {
-    ssh-keys = "${var.gce_ssh_key}"
+    ssh-keys = var.gce_ssh_key
   }
+
 
 }
 
